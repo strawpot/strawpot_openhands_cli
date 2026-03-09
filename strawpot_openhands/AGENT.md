@@ -2,7 +2,6 @@
 name: strawpot-openhands
 description: OpenHands CLI agent
 metadata:
-  version: "0.1.0"
   strawpot:
     bin:
       macos: strawpot_openhands
