@@ -75,7 +75,7 @@ Pass via `--config`:
 
 | Key | Type | Default | Description |
 |---|---|---|---|
-| `model` | string | _(none)_ | Model to use (passed via `LLM_MODEL` env var with `--override-with-envs`) |
+| `model` | string | _(none)_ | Model override (passed via `LLM_MODEL` env var with `--override-with-envs`) |
 
 ### Environment variables
 
