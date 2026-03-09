@@ -18,8 +18,7 @@ metadata:
     params:
       model:
         type: string
-        default: ""
-        description: Model to use (passed via LLM_MODEL env var)
+        description: Model override (passed via LLM_MODEL env var)
       dangerously_skip_permissions:
         type: boolean
         default: true
