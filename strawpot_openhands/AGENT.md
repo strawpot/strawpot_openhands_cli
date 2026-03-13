@@ -10,6 +10,8 @@ metadata:
       macos: curl -fsSL https://raw.githubusercontent.com/strawpot/strawpot_openhands_cli/main/strawpot_openhands/install.sh | sh
       linux: curl -fsSL https://raw.githubusercontent.com/strawpot/strawpot_openhands_cli/main/strawpot_openhands/install.sh | sh
     tools:
+      pip:
+        description: Python package manager (https://python.org)
       openhands:
         description: OpenHands CLI
         install:
