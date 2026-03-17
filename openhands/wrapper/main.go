@@ -60,7 +60,9 @@ func cmdSetup() {
 		}
 	}
 
-	// 2. Run openhands login.
+	// 2. Try openhands login.  This connects to OpenHands Cloud and may
+	//    fail if the account lacks credits (BYOR requires a paid plan).
+	//    On failure, guide the user to set LLM_API_KEY instead.
 	fmt.Fprintln(os.Stderr, "Starting OpenHands CLI login...")
 	fmt.Fprintln(os.Stderr, "If a browser window does not open, copy the URL from the output below.")
 	fmt.Fprintln(os.Stderr)
@@ -72,10 +74,10 @@ func cmdSetup() {
 	cmd.Env = os.Environ()
 
 	if err := cmd.Run(); err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok {
-			os.Exit(exitErr.ExitCode())
-		}
-		os.Exit(1)
+		fmt.Fprintln(os.Stderr)
+		fmt.Fprintln(os.Stderr, "OpenHands Cloud login failed.")
+		fmt.Fprintln(os.Stderr, "You can still use OpenHands with your own API key by setting LLM_API_KEY.")
+		fmt.Fprintln(os.Stderr)
 	}
 }
 
