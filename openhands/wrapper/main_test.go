@@ -112,9 +112,16 @@ func TestCmdBuild_MinimalArgs(t *testing.T) {
 		t.Error("instructions.md should not be created when no prompts given")
 	}
 
-	// No env key when no model
-	if _, ok := result["env"]; ok {
-		t.Error("env should not be present when no model configured")
+	// env should contain TTY_INTERACTIVE but not LLM_MODEL
+	envMap, ok := result["env"].(map[string]interface{})
+	if !ok {
+		t.Fatal("env should be present (TTY_INTERACTIVE)")
+	}
+	if envMap["TTY_INTERACTIVE"] != "1" {
+		t.Error("TTY_INTERACTIVE should be set to 1")
+	}
+	if _, hasModel := envMap["LLM_MODEL"]; hasModel {
+		t.Error("LLM_MODEL should not be present when no model configured")
 	}
 }
 
@@ -191,8 +198,16 @@ func TestCmdBuild_NoModelNoEnv(t *testing.T) {
 	var result map[string]interface{}
 	json.Unmarshal(output, &result)
 
-	if _, ok := result["env"]; ok {
-		t.Error("env should not be present when no model configured")
+	// env should contain TTY_INTERACTIVE but not LLM_MODEL
+	envMap, ok := result["env"].(map[string]interface{})
+	if !ok {
+		t.Fatal("env should be present (TTY_INTERACTIVE)")
+	}
+	if envMap["TTY_INTERACTIVE"] != "1" {
+		t.Error("TTY_INTERACTIVE should be set to 1")
+	}
+	if _, hasModel := envMap["LLM_MODEL"]; hasModel {
+		t.Error("LLM_MODEL should not be present when no model configured")
 	}
 
 	cmd := result["cmd"].([]interface{})

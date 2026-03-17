@@ -60,23 +60,20 @@ func cmdSetup() {
 		}
 	}
 
-	// 2. Run openhands login.
-	fmt.Fprintln(os.Stderr, "Starting OpenHands CLI login...")
-	fmt.Fprintln(os.Stderr, "If a browser window does not open, copy the URL from the output below.")
+	// 2. OpenHands requires interactive initial setup (API key, model config)
+	//    before --headless mode works.  The TUI doesn't render in a subprocess,
+	//    so instruct the user to configure in a separate terminal.
+	fmt.Fprintln(os.Stderr, "OpenHands CLI found at:", openhandsPath)
 	fmt.Fprintln(os.Stderr)
-
-	cmd := exec.Command(openhandsPath, "login")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Env = os.Environ()
-
-	if err := cmd.Run(); err != nil {
-		if exitErr, ok := err.(*exec.ExitError); ok {
-			os.Exit(exitErr.ExitCode())
-		}
-		os.Exit(1)
-	}
+	fmt.Fprintln(os.Stderr, "To configure OpenHands, open a new terminal and run:")
+	fmt.Fprintln(os.Stderr)
+	fmt.Fprintln(os.Stderr, "  openhands")
+	fmt.Fprintln(os.Stderr)
+	fmt.Fprintln(os.Stderr, "Complete the initial setup (API key, model selection), then exit.")
+	fmt.Fprintln(os.Stderr)
+	fmt.Fprint(os.Stderr, "Press Enter here when done...")
+	buf := make([]byte, 1)
+	os.Stdin.Read(buf)
 }
 
 // ---------------------------------------------------------------------------
@@ -289,7 +286,10 @@ func cmdBuild(args []string) {
 	}
 
 	// Model via env var (OpenHands has no -m flag)
-	env := map[string]string{}
+	// TTY_INTERACTIVE suppresses Rich's non-interactive terminal warning.
+	env := map[string]string{
+		"TTY_INTERACTIVE": "1",
+	}
 	if model, ok := config["model"].(string); ok && model != "" {
 		env["LLM_MODEL"] = model
 		cmd = append(cmd, "--override-with-envs")
