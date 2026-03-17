@@ -10,13 +10,11 @@ metadata:
       macos: curl -fsSL https://raw.githubusercontent.com/strawpot/strawpot_openhands_cli/main/strawpot_openhands/install.sh | sh
       linux: curl -fsSL https://raw.githubusercontent.com/strawpot/strawpot_openhands_cli/main/strawpot_openhands/install.sh | sh
     tools:
-      pip:
-        description: Python package manager (https://python.org)
       openhands:
-        description: OpenHands CLI
+        description: OpenHands CLI (https://github.com/OpenHands/OpenHands-CLI)
         install:
-          macos: pip install openhands-ai
-          linux: pip install openhands-ai
+          macos: "curl -fsSL https://install.openhands.dev/install.sh | sh"
+          linux: "curl -fsSL https://install.openhands.dev/install.sh | sh"
     params:
       model:
         type: string
