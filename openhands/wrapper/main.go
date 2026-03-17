@@ -39,13 +39,28 @@ func main() {
 // ---------------------------------------------------------------------------
 
 func cmdSetup() {
+	// 1. Check if openhands CLI exists; if not, try to install it.
 	openhandsPath, err := exec.LookPath("openhands")
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Error: openhands CLI not found on PATH.")
-		fmt.Fprintln(os.Stderr, "Install it with: pip install openhands-ai")
-		os.Exit(1)
+		fmt.Fprintln(os.Stderr, "OpenHands CLI not found. Installing...")
+		install := exec.Command("sh", "-c", "curl -fsSL https://install.openhands.dev/install.sh | sh")
+		install.Stdin = os.Stdin
+		install.Stdout = os.Stdout
+		install.Stderr = os.Stderr
+		install.Env = os.Environ()
+		if installErr := install.Run(); installErr != nil {
+			fmt.Fprintln(os.Stderr, "Failed to install OpenHands CLI.")
+			fmt.Fprintln(os.Stderr, "Install it manually: curl -fsSL https://install.openhands.dev/install.sh | sh")
+			os.Exit(1)
+		}
+		openhandsPath, err = exec.LookPath("openhands")
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "OpenHands CLI still not found after install.")
+			os.Exit(1)
+		}
 	}
 
+	// 2. Run openhands login.
 	fmt.Fprintln(os.Stderr, "Starting OpenHands CLI login...")
 	fmt.Fprintln(os.Stderr, "If a browser window does not open, copy the URL from the output below.")
 	fmt.Fprintln(os.Stderr)
@@ -54,8 +69,6 @@ func cmdSetup() {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	// Inherit full environment so DISPLAY/WAYLAND_DISPLAY are available
-	// for browser opening on Linux.
 	cmd.Env = os.Environ()
 
 	if err := cmd.Run(); err != nil {
